@@ -39,7 +39,7 @@ export function AppSidebar({ onLogout, userName, userRole }: AppSidebarProps) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">
-            {!collapsed && "CampusDoc AI"}
+            {!collapsed && "DocuGen AI"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
