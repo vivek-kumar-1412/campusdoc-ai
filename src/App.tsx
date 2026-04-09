@@ -33,7 +33,7 @@ function AppRoutes() {
       <Route element={<AppLayout user={user} onLogout={logout} />}>
         <Route path="/dashboard" element={<DashboardPage user={user} documents={documents} />} />
         <Route path="/create" element={<CreateDocumentPage onSave={addDocument} templates={templates} />} />
-        <Route path="/documents" element={<MyDocumentsPage documents={documents} user={user} onUpdate={updateDocument} />} />
+        <Route path="/documents" element={<MyDocumentsPage documents={documents} user={user} onUpdate={updateDocument} onAddDocument={addDocument} />} />
         <Route path="/templates" element={<TemplatesPage templates={templates} onAddTemplate={addTemplate} />} />
         <Route path="/history" element={<HistoryPage documents={documents} />} />
         <Route path="/analysis" element={<LegalAnalysisPage />} />

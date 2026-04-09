@@ -18,9 +18,10 @@ interface MyDocumentsPageProps {
   documents: GeneratedDocument[];
   user: User;
   onUpdate: (id: string, updates: Partial<GeneratedDocument>) => void;
+  onAddDocument: (doc: GeneratedDocument) => void;
 }
 
-export default function MyDocumentsPage({ documents, user, onUpdate }: MyDocumentsPageProps) {
+export default function MyDocumentsPage({ documents, user, onUpdate, onAddDocument }: MyDocumentsPageProps) {
   const [viewDoc, setViewDoc] = useState<GeneratedDocument | null>(null);
   const [editContent, setEditContent] = useState<string>("");
   const isAdmin = user.role === "mentor";
@@ -33,11 +34,51 @@ export default function MyDocumentsPage({ documents, user, onUpdate }: MyDocumen
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold tracking-tight">My Documents</h2>
-        <p className="text-sm text-muted-foreground">
-          {documents.length} document{documents.length !== 1 ? "s" : ""} found
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight">My Documents</h2>
+          <p className="text-sm text-muted-foreground">
+            {documents.length} document{documents.length !== 1 ? "s" : ""} found
+          </p>
+        </div>
+        <div className="relative overflow-hidden cursor-pointer">
+          <input
+            type="file"
+            accept=".txt,.md,.json"
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                const text = event.target?.result as string;
+                if (text) {
+                  const newDoc: GeneratedDocument = {
+                    id: crypto.randomUUID(),
+                    title: file.name.replace(/\.[^/.]+$/, ""),
+                    type: "mou",
+                    content: text,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    version: 1,
+                    status: "draft",
+                    projectId: "imported"
+                  };
+                  onAddDocument(newDoc);
+                  setViewDoc(newDoc);
+                  setEditContent(text);
+                  toast.success("Document imported successfully!");
+                }
+              };
+              reader.readAsText(file);
+              e.target.value = ''; // Reset input
+            }}
+          />
+          <Button variant="outline" className="pointer-events-none">
+            Upload Document (TXT/MD)
+          </Button>
+        </div>
       </div>
 
       {documents.length === 0 ? (
