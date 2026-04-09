@@ -1,4 +1,4 @@
-import { LayoutDashboard, FilePlus, FileText, FolderOpen, Clock, LogOut } from "lucide-react";
+import { LayoutDashboard, FilePlus, FileText, FolderOpen, Clock, LogOut, ShieldAlert } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Legal Analysis", url: "/analysis", icon: ShieldAlert },
   { title: "Create Document", url: "/create", icon: FilePlus },
   { title: "My Documents", url: "/documents", icon: FileText },
   { title: "Templates", url: "/templates", icon: FolderOpen },

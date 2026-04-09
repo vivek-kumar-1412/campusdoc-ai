@@ -169,6 +169,52 @@ ${content}`;
   return chatWithAI([{ role: "user", content: analysisPrompt }]);
 }
 
+export interface LegalRiskAnalysis {
+  clauses: Array<{
+    sectionTitle: string;
+    riskLevel: "HIGH" | "MEDIUM" | "LOW";
+    analysisText: string;
+    aiSuggestion: string;
+  }>;
+}
+
+/**
+ * Analyze a document and return structured JSON indicating specific clause risks.
+ */
+export async function analyzeLegalRisksJSON(content: string): Promise<LegalRiskAnalysis> {
+  const systemPrompt = `You are an expert legal AI assistant. Your task is to analyze legal documents and extract risk information in a strict JSON format. You must respond ONLY with valid JSON.
+  
+Do NOT use markdown blocks wrapping the JSON. Return raw JSON.
+
+Schema:
+{
+  "clauses": [
+    {
+      "sectionTitle": "Section name (e.g. Section 1.2 - Indemnification)",
+      "riskLevel": "HIGH" | "MEDIUM" | "LOW",
+      "analysisText": "Why this clause is risky or why it is acceptable",
+      "aiSuggestion": "Actionable suggestion to improve or negotiate the clause"
+    }
+  ]
+}`;
+
+  const messagePrompt = `Analyze the following document and evaluate the risks. Output strictly valid JSON matching the exact schema provided.
+  
+Document Content:
+${content}`;
+
+  const responseText = await chatWithAI([{ role: "user", content: messagePrompt }], systemPrompt);
+  
+  try {
+    // Deepseek sometimes wraps in json markdown block, clean it up just in case
+    const cleanedText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    return JSON.parse(cleanedText) as LegalRiskAnalysis;
+  } catch (error) {
+    console.error("Failed to parse JSON legal analysis:", error);
+    throw new Error("Failed to generate a structured analysis. The AI returned an invalid format.");
+  }
+}
+
 /**
  * Generate a complete legal document using AI.
  */
