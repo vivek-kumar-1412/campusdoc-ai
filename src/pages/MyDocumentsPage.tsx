@@ -22,6 +22,7 @@ interface MyDocumentsPageProps {
 
 export default function MyDocumentsPage({ documents, user, onUpdate }: MyDocumentsPageProps) {
   const [viewDoc, setViewDoc] = useState<GeneratedDocument | null>(null);
+  const [editContent, setEditContent] = useState<string>("");
   const isAdmin = user.role === "mentor";
 
   const statusColor: Record<string, string> = {
@@ -78,7 +79,10 @@ export default function MyDocumentsPage({ documents, user, onUpdate }: MyDocumen
                     <Badge className={statusColor[doc.status]} variant="secondary">
                       {doc.status}
                     </Badge>
-                    <Button size="sm" variant="outline" onClick={() => setViewDoc(doc)}>
+                    <Button size="sm" variant="outline" onClick={() => {
+                      setViewDoc(doc);
+                      setEditContent(doc.content);
+                    }}>
                       <Eye className="h-3.5 w-3.5" />
                     </Button>
                     {isAdmin && doc.status !== "approved" && (
@@ -100,16 +104,33 @@ export default function MyDocumentsPage({ documents, user, onUpdate }: MyDocumen
         </div>
       )}
 
-      <Dialog open={!!viewDoc} onOpenChange={() => setViewDoc(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh]">
+      <Dialog open={!!viewDoc} onOpenChange={(open) => !open && setViewDoc(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] bg-background/95 backdrop-blur-xl border-white/10 shadow-glass">
           <DialogHeader>
-            <DialogTitle>{viewDoc?.title}</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" />
+              {viewDoc?.title}
+            </DialogTitle>
           </DialogHeader>
           <Textarea
-            value={viewDoc?.content || ""}
-            readOnly
-            className="min-h-[400px] font-mono text-xs"
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            className="min-h-[500px] font-mono text-sm bg-white/5 border-white/10 rounded-xl leading-relaxed resize-none focus-visible:ring-primary/50"
           />
+          <div className="flex justify-end gap-3 mt-4">
+            <Button variant="outline" onClick={() => setViewDoc(null)}>
+              Cancel
+            </Button>
+            <Button onClick={() => {
+              if (viewDoc) {
+                onUpdate(viewDoc.id, { content: editContent });
+                toast.success("Document updated successfully!");
+                setViewDoc(null);
+              }
+            }}>
+               Save Changes
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
