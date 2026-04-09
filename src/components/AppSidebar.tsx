@@ -35,28 +35,31 @@ export function AppSidebar({ onLogout, userName, userRole }: AppSidebarProps) {
   const location = useLocation();
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border">
+    <Sidebar collapsible="icon" className="border-r border-border/30 bg-sidebar/80 backdrop-blur-xl">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <img src="/logo.png" alt="DocuGen AI" className="h-6 w-6 rounded-md object-cover" />
-              {!collapsed && "DocuGen AI"}
+          <SidebarGroupLabel className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground/70 mb-2">
+            <span className="flex items-center gap-3">
+              <div className="relative">
+                <div className="absolute -inset-1 bg-primary/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <img src="/logo.png" alt="DocuGen AI" className="h-6 w-6 rounded-md object-cover shadow-glass-sm relative z-10" />
+              </div>
+              {!collapsed && <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">DocuGen AI</span>}
             </span>
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink
                       to={item.url}
                       end
-                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent"
-                      activeClassName="bg-primary text-primary-foreground hover:bg-primary/90"
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 hover:bg-white/5 hover:text-foreground relative group overflow-hidden"
+                      activeClassName="bg-primary/10 text-primary hover:bg-primary/15 shadow-inset"
                     >
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:scale-110" />
+                      {!collapsed && <span className="relative z-10">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
