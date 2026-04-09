@@ -127,8 +127,19 @@ export default function TemplatesPage({ templates, onAddTemplate }: TemplatesPag
                 className="mt-1"
               />
             </div>
-            <div className="flex items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
-              <div className="text-center">
+            <div className="relative flex items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
+              <input 
+                type="file" 
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                accept=".docx,.pdf"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setFileName(file.name);
+                  }
+                }}
+              />
+              <div className="text-center pointer-events-none">
                 <Upload className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
                 <p className="text-xs text-muted-foreground">
                   Drop DOCX/PDF or click to upload
