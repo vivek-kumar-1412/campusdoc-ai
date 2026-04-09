@@ -39,7 +39,10 @@ export function AppSidebar({ onLogout, userName, userRole }: AppSidebarProps) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">
-            {!collapsed && "DocuGen AI"}
+            <span className="flex items-center gap-2">
+              <img src="/logo.png" alt="DocuGen AI" className="h-6 w-6 rounded-md object-cover" />
+              {!collapsed && "DocuGen AI"}
+            </span>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
