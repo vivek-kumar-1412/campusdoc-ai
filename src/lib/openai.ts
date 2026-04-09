@@ -1,45 +1,35 @@
 /**
- * OpenAI GPT Service Layer for CampusDoc AI
+ * OpenRouter AI Service Layer for CampusDoc AI
  *
- * Provides AI-powered features: chat, document generation,
- * grammar correction, legal analysis, and summarization.
+ * Uses OpenRouter's free-tier models for AI-powered features:
+ * chat, document generation, grammar correction, legal analysis,
+ * and summarization.
  */
 
-const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-const MODEL = "gpt-4o-mini";
-
-function getApiKey(): string {
-  const key = import.meta.env.VITE_OPENAI_API_KEY;
-  if (!key) {
-    throw new Error(
-      "OpenAI API key is missing. Please add VITE_OPENAI_API_KEY to your .env file."
-    );
-  }
-  return key;
-}
+const API_URL = "https://api.deepseek.com/chat/completions";
+const MODEL = "deepseek-chat";
+const API_KEY = "sk-b728619c50834ac78090fb35ae2f78f2";
 
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
   content: string;
 }
 
-interface OpenAIResponse {
-  choices: Array<{
+interface OpenRouterResponse {
+  choices?: Array<{
     message: {
       content: string;
     };
     finish_reason: string;
   }>;
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
+  error?: {
+    message: string;
+    code: number;
   };
 }
 
 /**
  * The system prompt that gives the AI full context about CampusDoc AI.
- * This is prepended to every conversation.
  */
 export const SYSTEM_PROMPT = `You are DocuGen AI Assistant — an expert AI embedded within the CampusDoc AI platform, a document automation tool designed for Indian startups, incubation centers, and academic institutions.
 
@@ -92,20 +82,21 @@ Tone: Professional yet friendly. Use markdown formatting (bold, bullet points, h
 When generating documents, use Indian legal conventions (₹ for currency, Indian contract law references, GST compliance).`;
 
 /**
- * Send a conversation to OpenAI and get a response.
+ * Send a conversation to OpenRouter and get a response.
+ * Uses the OpenAI-compatible API format.
  */
 export async function chatWithAI(
   messages: ChatMessage[],
   systemPrompt: string = SYSTEM_PROMPT
 ): Promise<string> {
-  const apiKey = getApiKey();
+  const apiKey = API_KEY;
 
   const allMessages: ChatMessage[] = [
     { role: "system", content: systemPrompt },
     ...messages,
   ];
 
-  const response = await fetch(OPENAI_API_URL, {
+  const response = await fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -122,11 +113,16 @@ export async function chatWithAI(
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     const errorMessage =
-      errorData?.error?.message || `API request failed with status ${response.status}`;
+      errorData?.error?.message ||
+      `API request failed with status ${response.status}`;
     throw new Error(errorMessage);
   }
 
-  const data: OpenAIResponse = await response.json();
+  const data: OpenRouterResponse = await response.json();
+
+  if (data.error) {
+    throw new Error(data.error.message);
+  }
 
   if (!data.choices?.[0]?.message?.content) {
     throw new Error("No response received from AI.");

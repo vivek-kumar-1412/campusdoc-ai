@@ -161,7 +161,7 @@ export function ChatBot() {
                     DocuGen AI
                   </h2>
                   <p className="text-[10px] text-muted-foreground">
-                    Powered by GPT-4o
+                    Powered by DeepSeek AI
                   </p>
                 </div>
               </div>
