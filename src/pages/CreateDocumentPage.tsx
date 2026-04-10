@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,8 +20,17 @@ interface CreateDocumentPageProps {
 }
 
 export default function CreateDocumentPage({ onSave, templates }: CreateDocumentPageProps) {
+  const [searchParams] = useSearchParams();
+  
   const [startupName, setStartupName] = useState("");
-  const [docType, setDocType] = useState("mou");
+  const [docType, setDocType] = useState(searchParams.get("type") || "mou");
+
+  useEffect(() => {
+    const type = searchParams.get("type");
+    if (type) {
+      setDocType(type);
+    }
+  }, [searchParams]);
   const [projectDetails, setProjectDetails] = useState("");
   const [partiesInvolved, setPartiesInvolved] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
@@ -256,6 +266,8 @@ export default function CreateDocumentPage({ onSave, templates }: CreateDocument
                 <Textarea
                   value={generatedContent}
                   onChange={(e) => setGeneratedContent(e.target.value)}
+                  data-document-id="draft"
+                  data-project-id={startupName ? startupName.toLowerCase().replace(/\s+/g, "-") : "draft"}
                   className="min-h-[500px] font-mono text-xs leading-relaxed"
                   readOnly={!isEditing}
                 />

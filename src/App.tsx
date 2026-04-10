@@ -11,6 +11,10 @@ import MyDocumentsPage from "@/pages/MyDocumentsPage";
 import TemplatesPage from "@/pages/TemplatesPage";
 import HistoryPage from "@/pages/HistoryPage";
 import LegalAnalysisPage from "@/pages/LegalAnalysisPage";
+import AboutPage from "@/pages/AboutPage";
+import HelpPage from "@/pages/HelpPage";
+import ChatAssistantPage from "@/pages/ChatAssistantPage";
+import GrammarFixerPage from "@/pages/GrammarFixerPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +41,10 @@ function AppRoutes() {
         <Route path="/templates" element={<TemplatesPage templates={templates} onAddTemplate={addTemplate} />} />
         <Route path="/history" element={<HistoryPage documents={documents} />} />
         <Route path="/analysis" element={<LegalAnalysisPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/chat" element={<ChatAssistantPage />} />
+        <Route path="/grammar" element={<GrammarFixerPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Route>
       <Route path="*" element={<NotFound />} />

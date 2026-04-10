@@ -49,7 +49,7 @@ export default function MyDocumentsPage({ documents, user, onUpdate, onAddDocume
             onChange={async (e) => {
               const file = e.target.files?.[0];
               if (!file) return;
-              
+
               const reader = new FileReader();
               reader.onload = (event) => {
                 const text = event.target?.result as string;
@@ -156,6 +156,8 @@ export default function MyDocumentsPage({ documents, user, onUpdate, onAddDocume
           <Textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
+            data-document-id={viewDoc?.id}
+            data-project-id={viewDoc?.projectId}
             className="min-h-[500px] font-mono text-sm bg-white/5 border-white/10 rounded-xl leading-relaxed resize-none focus-visible:ring-primary/50"
           />
           <div className="flex justify-end gap-3 mt-4">
@@ -169,7 +171,7 @@ export default function MyDocumentsPage({ documents, user, onUpdate, onAddDocume
                 setViewDoc(null);
               }
             }}>
-               Save Changes
+              Save Changes
             </Button>
           </div>
         </DialogContent>
